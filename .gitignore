@@ -1,0 +1,21 @@
+# Ignore all
+*
+
+# Unignore all with extensions
+!*.*
+
+# Unignore all dirs
+!*/
+
+### Assembler ###
+*.exe
+*.o
+*.obj
+*.bc
+*.gdb_history
+
+### Intellij ###
+**/.idea
+*.iml
+*.o
+
