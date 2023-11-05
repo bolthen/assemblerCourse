@@ -1,8 +1,5 @@
 
 .text
-### Parse string to integer
-### Input in stack: string pointer with value
-### Output: integer value in rax
 getValue:
     push %rbp
     mov %rsp, %rbp
@@ -30,9 +27,6 @@ getValue:
     ret
 
 
-### Put integer value to buffer
-### Input in stack: integer value
-###                 pointer to the last byte of buffer, will point to the beginning of the buffer
 valueToBuffer:
     push %rbp
     mov %rsp, %rbp
@@ -54,3 +48,4 @@ valueToBuffer:
     mov %rsi, +16(%rbp)
     pop %rbp
     ret
+

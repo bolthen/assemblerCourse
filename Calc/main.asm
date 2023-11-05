@@ -13,8 +13,7 @@ _start:
     pop %rcx
     pop %rax    # мусор
     pop %rax
-    dec %rcx
-    dec %rcx
+    sub $2, %rcx
     push %rcx
     push %rax
 
@@ -31,8 +30,7 @@ p:
     push %rbx
 
 plus:
-    mov $43, %rax
-    cmp %al, (%rdx)
+    cmpb $43, (%rdx)
     jne minus
     call getValue
     pop %rbx
@@ -41,8 +39,7 @@ plus:
     jmp endOp
 
 minus:
-    mov $45, %rax
-    cmp %al, (%rdx)
+    cmpb $45, (%rdx)
     jne multiple
     call getValue
     pop %rbx
@@ -51,8 +48,7 @@ minus:
     jmp endOp
 
 multiple:
-    mov $94, %rax
-    cmp %al, (%rdx)
+    cmpb $120, (%rdx)
     jne divide
     call getValue
     pop %rbx
@@ -86,3 +82,4 @@ endOp:
 
     mov $60, %rax
     syscall
+
