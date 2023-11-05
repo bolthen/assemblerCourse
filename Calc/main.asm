@@ -30,7 +30,7 @@ p:
     push %rbx
 
 plus:
-    cmpb $43, (%rdx)
+    cmpb $'+', (%rdx)
     jne minus
     call getValue
     pop %rbx
@@ -39,7 +39,7 @@ plus:
     jmp endOp
 
 minus:
-    cmpb $45, (%rdx)
+    cmpb $'-', (%rdx)
     jne multiple
     call getValue
     pop %rbx
@@ -48,7 +48,7 @@ minus:
     jmp endOp
 
 multiple:
-    cmpb $120, (%rdx)
+    cmpb $'x', (%rdx)
     jne divide
     call getValue
     pop %rbx
