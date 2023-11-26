@@ -2,7 +2,7 @@
 
 .set PROT_READ_WRITE, 0x3
 .set MAP_ANONYMOUS_PRIVATE, 0x22
-.set READ_BUFFER_SIZE, 10
+.set READ_BUFFER_SIZE, 0x1000
 
 .text
 _start:
@@ -46,7 +46,7 @@ parseStep:
             cmpq $0, -24(%rbp)      # если начало строки, то выбираем цвет
             jne lineParse
 
-eyword:
+keyword:
             cmpb $'.', (%rbx)
             jne mark
             mov $keywordColor, %rax
@@ -67,14 +67,14 @@ putColor:
 
 lineParse:
                 mov -24(%rbp), %rax
-                mov (%rbx), %rdx
+                movb (%rbx), %dl
                 movb %dl, tmpBuffer(%rax)
                 incq -24(%rbp)
 
                 cmpb $10, (%rbx)
                 pushf
-                inc %rbx
-                dec %rcx
+                    inc %rbx
+                    dec %rcx
                 popf
                 je print
 
@@ -86,12 +86,12 @@ print:
                 # дочитали до конца строки, выводим буфер вместе с цветом
                 push %rcx
                 push %rbx
-                mov $1, %rax
-                mov $1, %rdi
-                mov $colorEscape, %rsi
-                mov -24(%rbp), %rdx
-                add $5, %rdx
-                syscall
+                    mov $1, %rax
+                    mov $1, %rdi
+                    mov $colorEscape, %rsi
+                    mov -24(%rbp), %rdx
+                    add $5, %rdx
+                    syscall
                 pop %rbx
                 pop %rcx
 
@@ -105,7 +105,6 @@ print:
 return:
     mov %rbp, %rsp
 
-    pop %rax
     mov $60, %rax
     syscall
 
