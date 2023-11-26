@@ -2,6 +2,7 @@
 
 .set PROT_READ_WRITE, 0x3
 .set MAP_ANONYMOUS_PRIVATE, 0x22
+.set READ_BUFFER_SIZE, 10
 
 .text
 _start:
@@ -18,7 +19,7 @@ _start:
 
     mov $9, %rax
     mov $0, %rdi
-    mov $4096, %rsi
+    mov $READ_BUFFER_SIZE, %rsi
     mov $PROT_READ_WRITE, %rdx
     mov $-1, %r8
     mov $0, %r9
@@ -32,8 +33,11 @@ read:
         mov $0, %rax
         mov -8(%rbp), %rdi
         mov -16(%rbp), %rsi
-        mov $4096, %rdx
+        mov $READ_BUFFER_SIZE, %rdx
         syscall
+
+        cmp $0, %rax
+        je return
 
         mov %rax, %rcx              # количество прочитанных байт в текущей итерации
         mov -16(%rbp), %rbx         # указатель на текущий прочитанный символ
@@ -68,16 +72,17 @@ lineParse:
                 incq -24(%rbp)
 
                 cmpb $10, (%rbx)
-                je print
-
+                pushf
                 inc %rbx
                 dec %rcx
+                popf
+                je print
+
+                cmp $0, %rcx
+                je read
                 jmp lineParse
 
 print:
-                inc %rbx
-                dec %rcx
-
                 # дочитали до конца строки, выводим буфер вместе с цветом
                 push %rcx
                 push %rbx
@@ -95,9 +100,7 @@ print:
 
             cmp $0, %rcx
             jne parseStep
-
-        cmp $0, %rax
-        jne read
+            jmp read
 
 return:
     mov %rbp, %rsp
