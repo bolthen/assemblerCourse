@@ -100,7 +100,6 @@ getline:
     cmpq $0, %rbx
     je 4f                   # if read 0 bytes
 
-tmp:
 2:
     mov +16(%rbp), %rax
 
