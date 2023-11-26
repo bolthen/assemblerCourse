@@ -62,7 +62,7 @@ print:
 
 copy:
     movb (%rsi), %bl
-    cmp $1, %rdx
+    cmpq $1, %rdx
     jg 2f
     je 1f
     cmpb $' ', %bl
@@ -119,13 +119,13 @@ return:
 
 .data
 keywordColor:
-    .ascii "   \x1b[32m"
+    .ascii "   \x1b[33m"
 markColor:
     .ascii "   \x1b[31m"
 otherColor:
     .ascii "   \x1b[34m"
 operandColor:
-    .ascii "\x1b[33m"
+    .ascii "\x1b[32m"
 
 
 spaces:
