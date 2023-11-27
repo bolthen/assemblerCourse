@@ -23,7 +23,6 @@ read:
     call getline
     mov (%rsp), %rax
 
-    mov +32(%rax), %rbx
     cmpq $0, +32(%rax)
     je return           # if resultBufferIdx == 0
 
@@ -39,68 +38,73 @@ read:
 
 mark:
     mov $markColor, %rdi
-    mov (%rdi), %rdi
-    movq %rdi, spaces
     jmp print
 
 other:
     mov $otherColor, %rdi
-    mov (%rdi), %rdi
-    movq %rdi, spaces
     jmp print
 
 keyword:
     mov $keywordColor, %rdi
+
+print:
     mov (%rdi), %rdi
     movq %rdi, spaces
 
-print:
-    mov $0, %rdx            # flag
-    mov +32(%rax), %rcx
-    mov +24(%rax), %rsi
-    mov $tmpBuffer, %rdi
+    mov $0, %rdx            # state: 0 == first spaces, 1 == first word, 2 == after first word
+    mov +32(%rax), %rcx     # size to copy
+    mov +24(%rax), %rsi     # src
+    mov $tmpBuffer, %rdi    # dst
 
-copy:
+parse:
     movb (%rsi), %bl
-    cmpq $1, %rdx
-    jg 2f
-    je 1f
+
+startSpacesState:
+    cmpq $0, %rdx
+    jne firstWordState
     cmpb $' ', %bl
-    je 2f
+    je copy
     cmpb $'\t', %bl
-    je 2f
+    je copy
+    # then firstWordState
     mov $1, %rdx
 
-1:
+firstWordState:
+    cmpq $1, %rdx
+    jne afterFirstWordState
+    cmpb $' ', %bl
+    jne copy                    # still firstWordState
+    # else next state
+    mov $2, %rdx
+
     mov $spaces, %r8
     mov $otherColor, %r9
     mov (%r8), %r8
     mov (%r9), %r9
-    cmp %r8, %r9
-    jne 2f
-    cmp $1, %rdx
-    jne 2f
-    # after instruction
-    cmpb $' ', %bl
-    jne 2f
+    cmpq %r8, %r9
+    jne afterFirstWordState     # then not instruction line
+
+    # else copy operand color to dst buffer
     push %rcx
     push %rsi
     mov $5, %rcx
     mov $operandColor, %rsi
-    addq $5, +32(%rax)
-
-5:
+    addq $5, +32(%rax)          # + size to result buffer, because esp size
+1:
     movsb
-    loop 5b
+    loop 1b
     pop %rsi
     pop %rcx
-    mov $2, %rdx
 
-2:
+afterFirstWordState:
+    cmpq $1, %rdx
+    jne copy
+
+copy:
     movsb
-    loop copy
+    loop parse
 
-3:
+    # print result buffer
     mov $1, %rdi
     mov $colorEscape, %rsi
     mov +32(%rax), %rdx

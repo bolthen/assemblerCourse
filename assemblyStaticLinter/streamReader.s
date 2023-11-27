@@ -7,12 +7,12 @@
 .text
     # size: 48 bytes
     # struct ReaderInfo {
-    #     int64 fileDescriptor;     // +0
+    #     int64  fileDescriptor;    // +0
     #     char*  buffer;            // +8
     #     int64  bufferReadIdx;     // +16
     #     char*  resultBuffer;      // +24
-    #     int64 resultBufferIdx;    // +32
-    #     int64 bytesRemeining;     // +40
+    #     int64  resultBufferIdx;   // +32
+    #     int64  bytesRemeining;    // +40
     # };
 # stack:
 #       fileDescriptor
