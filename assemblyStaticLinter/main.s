@@ -82,7 +82,7 @@ firstWordState:
     mov (%r8), %r8
     mov (%r9), %r9
     cmpq %r8, %r9
-    jne afterFirstWordState     # then not instruction line
+    jne afterFirstWordState     # then not instruction line. Can comment last 6 lines of code
 
     # else copy operand color to dst buffer
     push %rcx
